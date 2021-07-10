@@ -25,7 +25,7 @@ public class App {
         // prepare the necessary drivers
         System.setProperty("webdriver.chrome.driver", "chromedriver");
         WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 5);
+        WebDriverWait wait = new WebDriverWait(driver, 8);
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-dev-shm-usage");
 
@@ -48,15 +48,14 @@ public class App {
             // get the wanted player's page
             String player = "//*[@id=\"__next\"]/div[2]/div[3]/section/div/div[2]/div[2]/div/div/div/table/tbody/tr[1]/td[1]/a";
             click_xpath(player, driver, wait);
-            //wait(1000);
 
             // stats
             click_xpath("//*[@id=\"__next\"]/div[2]/div[3]/div/div[1]/div/ul/li[2]/a", driver, wait);
-            //wait(1000);
+            wait(1000);
 
             Select dropMode = new Select(driver.findElement(By.name("PerMode")));
             dropMode.selectByVisibleText("Per 40 Minutes");
-            wait(3000);
+            wait(3000);     // the results often need a while to load
 
             // save score objects into an Arraylist
             List<Score> scores = new ArrayList<>();
@@ -65,7 +64,8 @@ public class App {
             rows = driver.findElements(By.xpath("/html/body/main/div/div/div/div[4]/div/div/div/div/nba-stat-table[1]/div[2]/div[1]/table/tbody/tr"));
 
             if (rows.size() == 0) {
-                System.out.println("There are no results for this player.");
+                driver.navigate().refresh();
+                System.out.println("There are no results available for this player.");
                 //driver.close();
             }
 
